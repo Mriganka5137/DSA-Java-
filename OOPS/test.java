@@ -1,6 +1,9 @@
 public class test {
 
-  public static void main(String[] args) {
+  /**
+   * @param args
+   */
+  public static void main(String[] args) throws Exception {
     try {
       int a = 5 / 0;
     } catch (Exception e) {
