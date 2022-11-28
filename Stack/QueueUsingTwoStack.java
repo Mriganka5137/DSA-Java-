@@ -1,1 +1,6 @@
-public class QueueUsingTwoStack {}
+public class QueueUsingTwoStack {
+
+  QueueUsingTwoStack() {
+    private Stack
+  }
+}

@@ -1,4 +1,4 @@
-package Stack;
+
 public class StackUsingArray {
 
   public StackUsingArray() {
