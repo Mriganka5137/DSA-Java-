@@ -84,10 +84,38 @@ public class BinaryTreeUse {
     return 1 + leftNodes + rightNodes;
   }
 
+  public static int largest(BinaryTree<Integer> root) {
+    if (root == null) {
+      return -1;
+    }
+
+    int largestLeft = largest(root.left);
+    int largestRight = largest(root.right);
+
+    return Math.max(root.data, Math.max(largestLeft, largestRight));
+  }
+
+  public static int numOfLeaves(BinaryTree<Integer> root) {
+    if (root == null) {
+      return 0;
+    }
+
+    if (root.left == null && root.right == null) {
+      return 1;
+    }
+
+    return numOfLeaves(root.left) + numOfLeaves(root.right);
+  }
+
   public static void main(String[] args) {
     BinaryTree<Integer> root = takeTreeInputBetter(true, 0, false);
     PrintBinaryTree(root);
     int nodes = noOfNodesInTree(root);
     System.out.println("No of Nodes in the Tree = " + nodes);
+
+    int largestNode = largest(root);
+    System.out.println("Largest Node in the tree = " + largestNode);
+
+    System.out.println("Num of Leaves in the Tree " + numOfLeaves(root));
   }
 }
