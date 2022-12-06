@@ -1,6 +1,71 @@
-import java.util.Scanner;
-
 public class BinaryTreeUse {
+
+  public static BinaryTree<Integer> takeTreeInputLevelwise() {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.println("Enter Root Data ");
+    int rootData = sc.nextInt();
+
+    // If user enters -1 as root -> Root is null
+    if (rootData == -1) {
+      return null;
+    }
+
+    // Inserted the root node into the front of the Queue
+    BinaryTree<Integer> root = new BinaryTree<Integer>(rootData);
+    Queue<BinaryTree<Integer>> pendingQueue = new LinkedList<BinaryTree<Integer>>();
+    pendingQueue.add(root);
+
+    while (!pendingQueue.isEmpty()) {
+      BinaryTree<Integer> temp = pendingQueue.remove();
+
+      // Asking for left node data of the removed or front ele that is just removed
+      System.out.println("Enter the leftchild of " + temp.data);
+      int leftChild = sc.nextInt();
+      if (leftChild != -1) {
+        BinaryTree<Integer> left = new BinaryTree<Integer>(leftChild);
+        temp.left = left;
+        pendingQueue.add(left);
+      }
+
+      // Asking for right node data of the removed or front ele that is just removed
+      System.out.println("Enter the rightchild of " + temp.data);
+      int rightChild = sc.nextInt();
+      if (rightChild != -1) {
+        BinaryTree<Integer> right = new BinaryTree<Integer>(rightChild);
+        temp.right = right;
+        pendingQueue.add(right);
+      }
+    }
+
+    return root;
+  }
+
+  public static void printLevelWise(BinaryTree<Integer> root) {
+    if (root == null) {
+      return;
+    }
+
+    Queue<BinaryTree<Integer>> q = new LinkedList<BinaryTree<Integer>>();
+    q.add(root);
+
+    while (!q.isEmpty()) {
+      BinaryTree<Integer> temp = q.remove();
+
+      System.out.print(temp.data + ": ");
+
+      if (temp.left != null) {
+        System.out.print("L: " + temp.left.data + ", ");
+        q.add(temp.left);
+      }
+
+      if (temp.right != null) {
+        System.out.print("R: " + temp.right.data);
+        q.add(temp.right);
+      }
+      System.out.println();
+    }
+  }
 
   public static void PrintBinaryTree(BinaryTree<Integer> root) {
     if (root == null) {
@@ -190,9 +255,70 @@ public class BinaryTreeUse {
     return root;
   }
 
+  public static boolean isTreeBalanced(BinaryTree<Integer> root) {
+    if (root == null) {
+      return true;
+    }
+
+    int leftHeight = heightOfTree(root.left);
+    int rightHeight = heightOfTree(root.right);
+
+    if (Math.abs(rightHeight - leftHeight) > 1) {
+      return false;
+    }
+
+    return isTreeBalanced(root.left) && isTreeBalanced(root.right);
+  }
+
+  public static int heightOfTree(BinaryTree<Integer> root) {
+    if (root == null) {
+      return 0;
+    }
+
+    int leftHeight = heightOfTree(root.left);
+    int rightHeight = heightOfTree(root.right);
+
+    return 1 + Math.max(leftHeight, rightHeight);
+  }
+
+  public static BalancedTreeReturn isTreeBalancedBetter(
+    BinaryTree<Integer> root
+  ) {
+    if (root == null) {
+      BalancedTreeReturn ans = new BalancedTreeReturn();
+      ans.height = 0;
+      ans.isBal = true;
+      return ans;
+    }
+
+    BalancedTreeReturn leftOutput = isTreeBalancedBetter(root.left);
+    BalancedTreeReturn rightOutput = isTreeBalancedBetter(root.right);
+
+    int height = Math.max(leftOutput.height, rightOutput.height) + 1;
+    boolean isBal = true;
+
+    if (Math.abs(leftOutput.height - rightOutput.height) > 1) {
+      isBal = false;
+    }
+
+    if (!leftOutput.isBal || !rightOutput.isBal) {
+      isBal = false;
+    }
+
+    BalancedTreeReturn ans = new BalancedTreeReturn();
+    ans.height = height;
+    ans.isBal = isBal;
+    return ans;
+  }
+
   public static void main(String[] args) {
-    BinaryTree<Integer> root = takeTreeInputBetter(true, 0, false);
-    PrintBinaryTree(root);
+    // BinaryTree<Integer> root = takeTreeInputBetter(true, 0, false);
+
+    BinaryTree<Integer> root = takeTreeInputLevelwise();
+    // PrintBinaryTree(root);
+
+    printLevelWise(root);
+
     int nodes = noOfNodesInTree(root);
     System.out.println("No of Nodes in the Tree = " + nodes);
 
@@ -215,5 +341,9 @@ public class BinaryTreeUse {
     BinaryTree<Integer> newRoot = mirrorBinaryTree(root);
 
     PrintBinaryTree(newRoot);
+
+    // System.out.println(isTreeBalanced(newRoot));
+
+    System.out.println(isTreeBalancedBetter(newRoot).isBal);
   }
 }
