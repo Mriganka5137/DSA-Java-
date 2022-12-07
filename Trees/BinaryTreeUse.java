@@ -384,6 +384,81 @@ public class BinaryTreeUse {
     return root;
   }
 
+  public static BinaryTree<Integer> buildTreeHelperInPost(
+    int[] postOrder,
+    int siPost,
+    int eiPost,
+    int[] inOrder,
+    int siIn,
+    int eiIn
+  ) {
+    if (siIn > eiIn) {
+      return null;
+    }
+
+    int rootData = postOrder[eiPost];
+    int rootIndex = 0;
+    //indexes for post Order
+    int leftSiPost;
+    int leftEiPost;
+    int rightSiPost;
+    int rightEiPost;
+
+    // Indexes for Inorder
+    int leftSiIn;
+    int leftEiIn;
+    int rightSiIn;
+    int rightEiIn;
+
+    int noOfLeftELe;
+    int noOfRightEle;
+
+    for (int i = siIn; i <= eiIn; i++) {
+      if (inOrder[i] == rootData) {
+        rootIndex = i;
+        break;
+      }
+    }
+
+    // InOrder Indexes
+    leftSiIn = siIn;
+    leftEiIn = rootIndex - 1;
+
+    rightSiIn = rootIndex + 1;
+    rightEiIn = eiIn;
+
+    noOfLeftELe = leftEiIn - leftSiIn + 1;
+    noOfRightEle = rightEiIn - rightSiIn + 1;
+
+    //Post Order Indexes
+    leftSiPost = siPost;
+    leftEiPost = leftSiPost + noOfLeftELe - 1;
+
+    rightSiPost = leftEiPost + 1;
+    rightEiPost = rightSiPost + noOfRightEle - 1;
+
+    BinaryTree<Integer> root = new BinaryTree<Integer>(rootData);
+    root.left =
+      buildTreeHelperInPost(
+        postOrder,
+        leftSiPost,
+        leftEiPost,
+        inOrder,
+        leftSiIn,
+        leftEiIn
+      );
+    root.right =
+      buildTreeHelperInPost(
+        postOrder,
+        rightSiPost,
+        rightEiPost,
+        inOrder,
+        rightSiIn,
+        rightEiIn
+      );
+    return root;
+  }
+
   public static void main(String[] args) {
     // BinaryTree<Integer> root = takeTreeInputBetter(true, 0, false);
 
@@ -418,7 +493,7 @@ public class BinaryTreeUse {
     // // System.out.println(isTreeBalanced(newRoot));
 
     // System.out.println(isTreeBalancedBetter(newRoot).isBal);
-
+    int[] postOrder = { 4, 5, 2, 6, 7, 3, 1 };
     int[] preOrder = { 1, 2, 4, 5, 3, 6, 7 };
     int[] inOrder = { 4, 2, 5, 1, 6, 3, 7 };
     BinaryTree<Integer> root = buildTreeHelperInPre(
@@ -430,6 +505,16 @@ public class BinaryTreeUse {
       inOrder.length - 1
     );
 
+    BinaryTree<Integer> root2 = buildTreeHelperInPost(
+      preOrder,
+      0,
+      postOrder.length - 1,
+      inOrder,
+      0,
+      inOrder.length - 1
+    );
+
     printLevelWise(root);
+    printLevelWise(root2);
   }
 }
