@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class BinaryTreeUse {
 
   public static BinaryTree<Integer> takeTreeInputLevelwise() {
@@ -311,39 +313,123 @@ public class BinaryTreeUse {
     return ans;
   }
 
+  public static BinaryTree<Integer> buildTreeHelperInPre(
+    int[] preOrder,
+    int siPre,
+    int eiPre,
+    int[] inOrder,
+    int siIn,
+    int eiIn
+  ) {
+    if (siPre > eiPre) {
+      return null;
+    }
+    int rootData;
+    int rootIndex = 0;
+    int leftSiPre; //found
+    int leftEiPre; //
+    int leftSiIn; //found
+    int leftEiIn; //found
+    int rightSiIn;
+    int rightEiIn;
+    int rightSiPre;
+    int rightEiPre;
+
+    rootData = preOrder[siPre];
+
+    for (int i = 0; i < inOrder.length; i++) {
+      if (inOrder[i] == rootData) {
+        rootIndex = i;
+        break;
+      }
+    }
+
+    // InOrder
+    leftSiIn = siIn;
+    leftEiIn = rootIndex - 1;
+    rightSiIn = rootIndex + 1;
+    rightEiIn = eiIn;
+
+    // PreOrder
+    int noOfLeftEle = leftEiIn - leftSiIn + 1;
+    int noOfRightEle = rightEiIn - rightSiIn + 1;
+    leftSiPre = siPre + 1;
+    leftEiPre = leftSiPre + noOfLeftEle - 1;
+    rightSiPre = leftEiPre + 1;
+    rightEiPre = rightSiPre + noOfRightEle - 1;
+
+    BinaryTree<Integer> root = new BinaryTree<Integer>(rootData);
+    // BinaryTree<Integer> leftTree;
+    // BinaryTree<Integer> rightTree;
+
+    root.left =
+      buildTreeHelperInPre(
+        preOrder,
+        leftSiPre,
+        leftEiPre,
+        inOrder,
+        leftSiIn,
+        leftEiIn
+      );
+    root.right =
+      buildTreeHelperInPre(
+        preOrder,
+        rightSiPre,
+        rightEiPre,
+        inOrder,
+        rightSiIn,
+        rightEiIn
+      );
+
+    return root;
+  }
+
   public static void main(String[] args) {
     // BinaryTree<Integer> root = takeTreeInputBetter(true, 0, false);
 
-    BinaryTree<Integer> root = takeTreeInputLevelwise();
+    // BinaryTree<Integer> root = takeTreeInputLevelwise();
+    // // PrintBinaryTree(root);
+
+    // printLevelWise(root);
+
+    // int nodes = noOfNodesInTree(root);
+    // System.out.println("No of Nodes in the Tree = " + nodes);
+
+    // int largestNode = largest(root);
+    // System.out.println("Largest Node in the tree = " + largestNode);
+
+    // System.out.println("Num of Leaves in the Tree " + numOfLeaves(root));
+
+    // printAtDepthK(root, 3);
+
+    // // changeToDepthTree(root, 0);
     // PrintBinaryTree(root);
+    // boolean flag = isNodePresent(root, 5);
+    // System.out.println(flag);
+
+    // printNodesWithoutSibling(root);
+
+    // // BinaryTree<Integer> newRoot = removeLeaves(root);
+
+    // BinaryTree<Integer> newRoot = mirrorBinaryTree(root);
+
+    // PrintBinaryTree(newRoot);
+
+    // // System.out.println(isTreeBalanced(newRoot));
+
+    // System.out.println(isTreeBalancedBetter(newRoot).isBal);
+
+    int[] preOrder = { 1, 2, 4, 5, 3, 6, 7 };
+    int[] inOrder = { 4, 2, 5, 1, 6, 3, 7 };
+    BinaryTree<Integer> root = buildTreeHelperInPre(
+      preOrder,
+      0,
+      preOrder.length - 1,
+      inOrder,
+      0,
+      inOrder.length - 1
+    );
 
     printLevelWise(root);
-
-    int nodes = noOfNodesInTree(root);
-    System.out.println("No of Nodes in the Tree = " + nodes);
-
-    int largestNode = largest(root);
-    System.out.println("Largest Node in the tree = " + largestNode);
-
-    System.out.println("Num of Leaves in the Tree " + numOfLeaves(root));
-
-    printAtDepthK(root, 3);
-
-    // changeToDepthTree(root, 0);
-    PrintBinaryTree(root);
-    boolean flag = isNodePresent(root, 5);
-    System.out.println(flag);
-
-    printNodesWithoutSibling(root);
-
-    // BinaryTree<Integer> newRoot = removeLeaves(root);
-
-    BinaryTree<Integer> newRoot = mirrorBinaryTree(root);
-
-    PrintBinaryTree(newRoot);
-
-    // System.out.println(isTreeBalanced(newRoot));
-
-    System.out.println(isTreeBalancedBetter(newRoot).isBal);
   }
 }
